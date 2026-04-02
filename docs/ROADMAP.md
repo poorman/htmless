@@ -11,28 +11,28 @@ Build the cleanest, fastest headless CMS that makes Strapi look bloated. Open so
 ## Phase 1 — Foundation
 > Goal: API skeleton, schema registry, entry CRUD, auth system
 
-- [ ] Monorepo setup (Node.js + Next.js workspaces)
-- [ ] PostgreSQL + Prisma schema (core tables)
-- [ ] Docker-compose dev environment (postgres, redis, api, admin)
-- [ ] CMA API skeleton (`/cma/v1/...`)
-- [ ] CDA API skeleton (`/cda/v1/...`)
-- [ ] Preview API skeleton (`/preview/v1/...`)
-- [ ] Schema registry MVP (content types, fields, taxonomies)
-- [ ] Entry CRUD (draft-only, no publish yet)
-- [ ] RBAC + user auth (login, sessions/JWT)
-- [ ] Scoped API tokens (machine tokens for builds/integrations)
+- [x] Monorepo setup (Node.js + Next.js workspaces)
+- [x] PostgreSQL + Prisma schema (core tables)
+- [x] Docker-compose dev environment (postgres, redis, api, admin)
+- [x] CMA API skeleton (`/cma/v1/...`)
+- [x] CDA API skeleton (`/cda/v1/...`)
+- [x] Preview API skeleton (`/preview/v1/...`)
+- [x] Schema registry MVP (content types, fields, taxonomies)
+- [x] Entry CRUD (draft-only, no publish yet)
+- [x] RBAC + user auth (login, sessions/JWT)
+- [x] Scoped API tokens (machine tokens for builds/integrations)
 - [ ] Publish JSON Schema for content types
-- [ ] Basic admin UI shell (Next.js, login, navigation)
+- [x] Basic admin UI shell (Next.js, login, navigation)
 
 ## Phase 2 — Editorial Core
 > Goal: Draft/publish workflow, versioning, preview, scheduling
 
-- [ ] Draft/publish separation (entry_versions + entry_state)
-- [ ] Version history + autosave
-- [ ] Preview token issuance + Preview API reads
+- [x] Draft/publish separation (entry_versions + entry_state)
+- [x] Version history + autosave
+- [x] Preview token issuance + Preview API reads
 - [ ] Scheduling (publishAt with background job)
-- [ ] Link resolution rules (published-only CDA, draft-aware Preview)
-- [ ] ETag/If-Match concurrency control on CMA writes
+- [x] Link resolution rules (published-only CDA, draft-aware Preview)
+- [x] ETag/If-Match concurrency control on CMA writes
 - [ ] Admin UI: content editor with draft/publish controls
 - [ ] Admin UI: version history viewer
 - [ ] Admin UI: preview button (generates token, opens preview URL)
