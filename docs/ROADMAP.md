@@ -65,23 +65,23 @@ Build the cleanest, fastest headless CMS that makes Strapi look bloated. Open so
 > Goal: Event bus, webhooks, custom endpoints, plugin system
 
 - [x] Internal event bus (entry.published, asset.created, etc.)
-- [ ] Extension manifest spec (namespaced endpoints, hooks, fields)
+- [x] Extension manifest spec (namespaced endpoints, hooks, fields)
 - [x] Webhook engine (registration, signing, TTL, retries)
 - [x] Webhook delivery logs (`GET /cma/v1/webhooks/{id}/deliveries`)
-- [ ] `include=` and `fields=` query shaping with bounds
+- [x] `include=` and `fields=` query shaping with bounds
 - [ ] GraphQL layer (optional, introspection in dev)
-- [ ] Admin UI: webhook management
-- [ ] Admin UI: extension manager
+- [x] Admin UI: webhook management
+- [x] Admin UI: extension manager
 
 ## Phase 6 — Hardening & DX
 > Goal: Production-ready, auditable, developer-friendly
 
-- [ ] Audit logs (who changed what, when)
+- [x] Audit logs (who changed what, when)
 - [ ] Policy test harness ("simulate authorization")
-- [ ] Rate limiting per token/IP
-- [ ] Schema codegen tooling (TypeScript types from content types)
+- [x] Rate limiting per token/IP
+- [x] Schema codegen tooling (TypeScript types from content types)
 - [ ] CLI tool (`htmless init`, `htmless migrate`, `htmless deploy`)
-- [ ] One-command deployment (`docker compose up`)
+- [x] One-command deployment (`docker compose up`)
 - [ ] Documentation site
 - [ ] Contributor guide
 

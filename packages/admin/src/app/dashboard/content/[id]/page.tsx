@@ -82,14 +82,47 @@ export default function ContentEditorPage() {
     try {
       const data = await apiGet<Entry>(`/cma/v1/entries/${id}`);
       setEntry(data);
-      // Flatten entry data into form strings
+
+      // Try to load field definitions for the content type
+      const typeKey = data.contentType?.key ?? data.contentTypeKey;
+      let fields: FieldDef[] = [];
+      if (typeKey) {
+        try {
+          const typeRes = await apiGet<{ fields?: FieldDef[] }>(`/cma/v1/schemas/types/${typeKey}`);
+          fields = typeRes.fields ?? [];
+          setFieldDefs(fields);
+        } catch {
+          // Schema fetch failed, proceed without field type info
+        }
+      }
+
+      // Determine which fields are richtext/blocks based on schema
+      const blockFieldKeys = new Set(
+        fields.filter((f) => f.type === 'richtext' || f.type === 'blocks').map((f) => f.key)
+      );
+
+      // Flatten entry data into form strings + extract blocks data
+      const latestData = data.versions && data.versions.length > 0
+        ? (data.versions[0].data as Record<string, unknown>)
+        : (data.data && typeof data.data === 'object' ? data.data : {});
+
       const flat: Record<string, string> = {};
-      if (data.data && typeof data.data === 'object') {
-        for (const [key, val] of Object.entries(data.data)) {
-          flat[key] = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val ?? '');
+      const blocks: Record<string, BlockInstance[]> = {};
+
+      if (latestData && typeof latestData === 'object') {
+        for (const [key, val] of Object.entries(latestData)) {
+          if (blockFieldKeys.has(key) && Array.isArray(val)) {
+            blocks[key] = val as BlockInstance[];
+          } else if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && val[0] !== null && 'typeKey' in val[0]) {
+            // Auto-detect blocks arrays even without schema info
+            blocks[key] = val as BlockInstance[];
+          } else {
+            flat[key] = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val ?? '');
+          }
         }
       }
       setFormData(flat);
+      setBlocksData(blocks);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load entry');
     } finally {
@@ -128,7 +161,29 @@ export default function ContentEditorPage() {
         result[key] = val;
       }
     }
+    // Merge blocks data
+    for (const [key, blocks] of Object.entries(blocksData)) {
+      result[key] = blocks;
+    }
     return result;
+  }
+
+  function handleBlocksChange(fieldKey: string, blocks: BlockInstance[]) {
+    setBlocksData((prev) => ({ ...prev, [fieldKey]: blocks }));
+  }
+
+  function handleInsertPattern(fieldKey: string) {
+    setPatternTargetField(fieldKey);
+    setShowPatternPicker(true);
+  }
+
+  function handlePatternSelect(blocks: BlockInstance[]) {
+    if (patternTargetField) {
+      const existing = blocksData[patternTargetField] ?? [];
+      setBlocksData((prev) => ({ ...prev, [patternTargetField]: [...existing, ...blocks] }));
+    }
+    setShowPatternPicker(false);
+    setPatternTargetField(null);
   }
 
   async function handleSaveDraft() {
@@ -464,6 +519,45 @@ export default function ContentEditorPage() {
             )}
           </div>
 
+          {/* Block Editor Fields */}
+          {Object.entries(blocksData).map(([fieldKey, blocks]) => {
+            const fieldDef = fieldDefs.find((f) => f.key === fieldKey);
+            const fieldLabel = fieldDef?.name ?? fieldKey;
+            return (
+              <div key={fieldKey} style={{ ...cardStyle, marginTop: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 600 }}>{fieldLabel}</h3>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.15rem' }}>
+                      {fieldDef?.type === 'richtext' ? 'Rich text (blocks)' : 'Block content'} field
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleInsertPattern(fieldKey)}
+                    style={{ ...btnSecondary, padding: '0.3rem 0.7rem', fontSize: '0.75rem' }}
+                  >
+                    Insert Pattern
+                  </button>
+                </div>
+                <BlocksEditor
+                  blocks={blocks}
+                  onChange={(updated) => handleBlocksChange(fieldKey, updated)}
+                  spaceId={spaceId}
+                />
+              </div>
+            );
+          })}
+
+          {/* Pattern Picker Modal */}
+          {showPatternPicker && (
+            <PatternPicker
+              onSelect={handlePatternSelect}
+              onClose={() => { setShowPatternPicker(false); setPatternTargetField(null); }}
+              spaceId={spaceId}
+              typeKey={entry?.contentType?.key ?? entry?.contentTypeKey}
+            />
+          )}
+
           {/* Version History */}
           {entry.versions && entry.versions.length > 0 && (
             <div style={{ ...cardStyle, marginTop: '1.5rem' }}>
@@ -505,13 +599,24 @@ export default function ContentEditorPage() {
                         <button
                           onClick={() => {
                             // Revert: load this version's data into the form
+                            const blockFieldKeys = new Set(
+                              fieldDefs.filter((f) => f.type === 'richtext' || f.type === 'blocks').map((f) => f.key)
+                            );
                             const flat: Record<string, string> = {};
+                            const blocks: Record<string, BlockInstance[]> = {};
                             if (v.data && typeof v.data === 'object') {
                               for (const [key, val] of Object.entries(v.data)) {
-                                flat[key] = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val ?? '');
+                                if (blockFieldKeys.has(key) && Array.isArray(val)) {
+                                  blocks[key] = val as BlockInstance[];
+                                } else if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && val[0] !== null && 'typeKey' in (val[0] as Record<string, unknown>)) {
+                                  blocks[key] = val as BlockInstance[];
+                                } else {
+                                  flat[key] = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val ?? '');
+                                }
                               }
                             }
                             setFormData(flat);
+                            setBlocksData(blocks);
                             showSuccess(`Reverted to v${v.version}. Click "Save Draft" to persist.`);
                           }}
                           style={{ ...btnSecondary, padding: '0.2rem 0.5rem', fontSize: '0.7rem' }}

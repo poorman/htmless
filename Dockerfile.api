@@ -1,0 +1,33 @@
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+
+# Install dependencies
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/core/package.json packages/core/
+COPY packages/worker/package.json packages/worker/
+RUN pnpm install --frozen-lockfile --filter @htmless/core --filter @htmless/worker
+
+# Copy source and build
+COPY packages/core/ packages/core/
+COPY packages/worker/ packages/worker/
+COPY tsconfig.base.json ./
+RUN pnpm --filter @htmless/core prisma generate
+RUN pnpm --filter @htmless/core build
+
+# Production image
+FROM node:20-alpine
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/packages/core/node_modules ./packages/core/node_modules
+COPY --from=base /app/packages/core/dist ./packages/core/dist
+COPY --from=base /app/packages/core/prisma ./packages/core/prisma
+COPY --from=base /app/packages/core/package.json ./packages/core/
+COPY --from=base /app/package.json ./
+COPY --from=base /app/pnpm-workspace.yaml ./
+
+ENV NODE_ENV=production
+EXPOSE 3000
+CMD ["node", "packages/core/dist/server.js"]

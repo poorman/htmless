@@ -8,8 +8,11 @@ const NAV_ITEMS = [
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Content', href: '/dashboard/content' },
   { label: 'Schema', href: '/dashboard/schema' },
+  { label: 'Blocks', href: '/dashboard/blocks' },
+  { label: 'Patterns', href: '/dashboard/patterns' },
   { label: 'Media', href: '/dashboard/media' },
   { label: 'Webhooks', href: '/dashboard/webhooks' },
+  { label: 'Extensions', href: '/dashboard/extensions' },
   { label: 'API Tokens', href: '/dashboard/tokens' },
   { label: 'Settings', href: '/dashboard/settings' },
 ];

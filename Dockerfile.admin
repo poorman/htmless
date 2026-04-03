@@ -1,0 +1,33 @@
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+
+# Install dependencies
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY packages/admin/package.json packages/admin/
+RUN pnpm install --frozen-lockfile --filter @htmless/admin
+
+# Copy source and build
+COPY packages/admin/ packages/admin/
+COPY tsconfig.base.json ./
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm --filter @htmless/admin build
+
+# Production image
+FROM node:20-alpine
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/packages/admin/.next ./packages/admin/.next
+COPY --from=base /app/packages/admin/public ./packages/admin/public
+COPY --from=base /app/packages/admin/package.json ./packages/admin/
+COPY --from=base /app/packages/admin/next.config.ts ./packages/admin/
+COPY --from=base /app/package.json ./
+COPY --from=base /app/pnpm-workspace.yaml ./
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+EXPOSE 3001
+WORKDIR /app/packages/admin
+CMD ["pnpm", "start"]

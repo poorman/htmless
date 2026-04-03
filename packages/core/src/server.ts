@@ -6,7 +6,9 @@ import { prisma } from './db.js';
 import cmaRouter from './api/cma/index.js';
 import cdaRouter from './api/cda/index.js';
 import previewRouter from './api/preview/index.js';
+import extensionRouter from './extensions/router.js';
 import { wireEventHandlers } from './events/wire.js';
+import { apiRateLimiter, loginRateLimiter } from './auth/rate-limit.js';
 
 const app = express();
 
@@ -20,10 +22,14 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', version: '0.1.0' });
 });
 
+// Rate limiting on login route (applied before CMA router so it runs first)
+app.use('/cma/v1/auth/login', loginRateLimiter);
+
 // API surfaces
-app.use('/cma/v1', cmaRouter);
+app.use('/cma/v1', apiRateLimiter, cmaRouter);
 app.use('/cda/v1', cdaRouter);
 app.use('/preview/v1', previewRouter);
+app.use('/api/v1', extensionRouter);
 
 // 404 handler
 app.use((_req, res) => {

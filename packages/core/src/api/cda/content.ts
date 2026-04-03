@@ -2,25 +2,11 @@ import { Router } from 'express';
 import type { Router as IRouter } from 'express';
 import { createHash } from 'crypto';
 import { prisma } from '../../db.js';
+import { parseFields, parseInclude, projectFields } from '../../utils/query-shaping.js';
 
 import type { Request, Response } from 'express';
 
 const router: IRouter = Router();
-
-/**
- * Pick specific fields from a data object.
- * Returns the full object when `fields` is undefined/empty.
- */
-function projectFields(data: Record<string, unknown>, fields?: string[]): Record<string, unknown> {
-  if (!fields || fields.length === 0) return data;
-  const result: Record<string, unknown> = {};
-  for (const key of fields) {
-    if (key in data) {
-      result[key] = data[key];
-    }
-  }
-  return result;
-}
 
 /**
  * Compute a weak ETag from a JSON-serialisable value.
@@ -95,14 +81,12 @@ router.get('/:typeKey', async (req: Request, res: Response): Promise<void> => {
 
   const typeKey = req.params.typeKey as string;
   const slug = req.query.slug as string | undefined;
-  const fieldsParam = req.query.fields as string | undefined;
-  const includeParam = req.query.include as string | undefined;
   const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
   const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string, 10) || 25));
   const skip = (page - 1) * limit;
 
-  const fields = fieldsParam ? fieldsParam.split(',').map((f) => f.trim()) : undefined;
-  const include = includeParam ? includeParam.split(',').map((f) => f.trim()) : [];
+  const fields = parseFields(req.query.fields as string | undefined);
+  const include = parseInclude(req.query.include as string | undefined);
 
   // Verify content type exists in this space
   const contentType = await prisma.contentType.findUnique({
@@ -188,11 +172,8 @@ router.get('/:typeKey/:id', async (req: Request, res: Response): Promise<void> =
 
   const typeKey = req.params.typeKey as string;
   const id = req.params.id as string;
-  const fieldsParam = req.query.fields as string | undefined;
-  const includeParam = req.query.include as string | undefined;
-
-  const fields = fieldsParam ? fieldsParam.split(',').map((f) => f.trim()) : undefined;
-  const include = includeParam ? includeParam.split(',').map((f) => f.trim()) : [];
+  const fields = parseFields(req.query.fields as string | undefined);
+  const include = parseInclude(req.query.include as string | undefined);
 
   // Verify content type
   const contentType = await prisma.contentType.findUnique({

@@ -1,0 +1,83 @@
+## HTMLess — One-command production deployment
+## Usage: docker compose up -d
+##
+## Default admin login: admin@htmless.com / admin123
+## API: http://localhost:3000
+## Admin: http://localhost:3001
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: htmless
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-htmless_prod}
+      POSTGRES_DB: htmless
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U htmless"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: postgresql://htmless:${DB_PASSWORD:-htmless_prod}@postgres:5432/htmless
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-change-this-in-production}
+      PORT: 3000
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://htmless:${DB_PASSWORD:-htmless_prod}@postgres:5432/htmless
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    restart: unless-stopped
+    ports:
+      - "${ADMIN_PORT:-3001}:3001"
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  redisdata:
