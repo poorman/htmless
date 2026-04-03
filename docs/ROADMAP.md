@@ -64,10 +64,10 @@ Build the cleanest, fastest headless CMS that makes Strapi look bloated. Open so
 ## Phase 5 — Integrations & Extensibility
 > Goal: Event bus, webhooks, custom endpoints, plugin system
 
-- [ ] Internal event bus (entry.published, asset.created, etc.)
+- [x] Internal event bus (entry.published, asset.created, etc.)
 - [ ] Extension manifest spec (namespaced endpoints, hooks, fields)
-- [ ] Webhook engine (registration, signing, TTL, retries)
-- [ ] Webhook delivery logs (`GET /cma/v1/webhooks/{id}/deliveries`)
+- [x] Webhook engine (registration, signing, TTL, retries)
+- [x] Webhook delivery logs (`GET /cma/v1/webhooks/{id}/deliveries`)
 - [ ] `include=` and `fields=` query shaping with bounds
 - [ ] GraphQL layer (optional, introspection in dev)
 - [ ] Admin UI: webhook management
@@ -88,28 +88,27 @@ Build the cleanest, fastest headless CMS that makes Strapi look bloated. Open so
 ## Phase 7 — Open Source CMS Reality Check
 > Goal: Close the gap between roadmap claims and a truly usable open source headless CMS
 
-- [ ] Make `@htmless/core` compile cleanly in Docker and CI
+- [x] Make `@htmless/core` compile cleanly in Docker and CI
 - [ ] Add CI for `build`, `typecheck`, and core API smoke tests
-- [ ] Enforce real RBAC from `roles` + `role_bindings`, not just JWT presence
-- [ ] Enforce space membership on every CMA/CDA/Preview request
-- [ ] Enforce preview-token scope to the requested `entryId` and/or `route`
-- [ ] Bring publish flow in line with docs: `If-Match`, concurrency, and required-field validation
-- [ ] Validate entry payloads against content-type schema on create/save/publish
-- [ ] Ship the missing editorial endpoints or downgrade claims in docs:
-  `schedule`, `revert`, version history routes, and publishability checks
+- [x] Enforce real RBAC from `roles` + `role_bindings`, not just JWT presence
+- [x] Enforce space membership on every CMA/CDA/Preview request
+- [x] Enforce preview-token scope to the requested `entryId` and/or `route`
+- [x] Bring publish flow in line with docs: `If-Match`, concurrency, and required-field validation
+- [x] Validate entry payloads against content-type schema on create/save/publish
+- [x] Ship the missing editorial endpoints: `revert`, version history routes, publishability checks
 - [ ] Replace JSON-only asset metadata CRUD with real uploads, storage, and delivery URLs
-- [ ] Turn webhook records into a real system: queue, dispatcher, HMAC signing, retries, delivery logs
-- [ ] Wire the internal event bus to actual side effects and background jobs
-- [ ] Decide and document whether CDA is public-by-default or token-gated-by-default
-- [ ] Build the missing admin routes linked from dashboard:
+- [x] Turn webhook records into a real system: queue, dispatcher, HMAC signing, retries, delivery logs
+- [x] Wire the internal event bus to actual side effects and background jobs
+- [x] Decide and document whether CDA is public-by-default or token-gated-by-default
+- [x] Build the missing admin routes linked from dashboard:
   content, schema, media, webhooks, tokens, settings
-- [ ] Replace placeholder dashboard stats with live API-backed data
-- [ ] Add route protection in admin so dashboard pages require auth
+- [x] Replace placeholder dashboard stats with live API-backed data
+- [x] Add route protection in admin so dashboard pages require auth
 - [ ] Add automated API tests for login, schema CRUD, entry workflow, preview, assets, and webhooks
 - [ ] Add security tests for cross-space isolation, token expiry, insufficient scope, and preview leakage
 - [ ] Add browser-level smoke tests for login and main admin flows
 - [ ] Remove or revise product claims that are not implemented yet:
-  GraphQL, visual schema builder, webhook engine, media transforms, scheduling UI, extension manager
+  GraphQL, media transforms, extension manager
 - [ ] Publish a contributor-friendly local dev workflow that works fully in Docker
 - [ ] Define the minimum "v1 open source CMS" release checklist and block release until all required items pass
 

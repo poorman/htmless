@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTMLess — The Open Source Headless CMS That Doesn't Suck</title>
-    <meta name="description" content="HTMLess is an open source headless CMS with instant REST + GraphQL APIs, a schema builder like Notion, and multi-site support. Self-host free or use our cloud.">
+    <meta name="description" content="HTMLess is an open source headless CMS for developers, designers, and agencies with a visual schema builder, structured content, live preview, and fast APIs.">
     <meta name="keywords" content="headless CMS, open source CMS, Strapi alternative, headless CMS for Next.js, content management API, schema builder, REST API CMS, GraphQL CMS">
     <meta name="author" content="HTMLess">
     <meta name="robots" content="index, follow">
@@ -13,14 +13,14 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="HTMLess — The Open Source Headless CMS That Doesn't Suck">
-    <meta property="og:description" content="Schema builder like Notion. Instant API. Multi-site. Self-host free or use our cloud. The headless CMS developers actually want to use.">
+    <meta property="og:description" content="Visual schema builder. Structured content. Live preview. Fast APIs. Multi-site. The open source headless CMS teams can actually enjoy using.">
     <meta property="og:url" content="https://htmless.com/">
     <meta property="og:site_name" content="HTMLess">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="HTMLess — Open Source Headless CMS">
-    <meta name="twitter:description" content="Schema builder like Notion. Instant API. Multi-site. The CMS developers actually want to use.">
+    <meta name="twitter:description" content="Visual schema builder, structured content, live preview, and fast APIs for developers, designers, and agencies.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -162,6 +162,16 @@
         }
         .hero-code .prompt { color: var(--accent-light); }
         .hero-code .cmd { color: var(--text); }
+        .hero-audience {
+            display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+            margin-top: 1.25rem;
+        }
+        .hero-audience span {
+            display: inline-flex; align-items: center;
+            padding: 0.4rem 0.8rem; border-radius: 999px;
+            background: rgba(24,24,27,0.8); border: 1px solid var(--border);
+            font-size: 0.78rem; color: var(--text-muted);
+        }
 
         /* ── SECTIONS ── */
         section { padding: 6rem 2rem; }
@@ -385,7 +395,7 @@
         "name": "HTMLess",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows (Docker)",
-        "description": "Open source headless CMS with instant REST + GraphQL APIs, a schema builder like Notion, and multi-site support.",
+        "description": "Open source headless CMS with a visual schema builder, structured content, live preview, media workflows, and fast APIs for developers and design teams.",
         "offers": [
             { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free — Self-hosted" },
             { "@type": "Offer", "price": "29", "priceCurrency": "USD", "description": "Starter — Small apps" },
@@ -407,7 +417,7 @@
                 <li><a href="#api">API</a></li>
                 <li><a href="#compare">Compare</a></li>
                 <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#" class="nav-github"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> GitHub</a></li>
+                <li><a href="https://github.com/pbieda/htmless" target="_blank" rel="noopener" class="nav-github"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> GitHub</a></li>
             </ul>
             <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open')" aria-label="Menu">
                 <span></span><span></span><span></span>
@@ -432,14 +442,19 @@
                 <span class="dot"></span>
                 Open Source &middot; MIT Licensed
             </div>
-            <h1>The headless CMS<br>that <span class="gradient">doesn't suck</span></h1>
+            <h1>The open source headless CMS<br>for <span class="gradient">developers and creatives</span></h1>
             <p class="hero-desc">
-                Schema builder like Notion. Instant REST &amp; GraphQL APIs. Multi-site from day one.
-                Self-host free forever, or let us handle the infra.
+                Visual enough for web designers and content teams. Powerful enough for developers who want clean APIs,
+                structured content, live preview, and multi-site publishing without the usual CMS pain.
             </p>
             <div class="hero-actions">
                 <a href="#pricing" class="btn btn-primary">Start Building &rarr;</a>
                 <a href="#features" class="btn btn-ghost">See Features</a>
+            </div>
+            <div class="hero-audience">
+                <span>For developers who want clean APIs</span>
+                <span>For designers who want visual control</span>
+                <span>For agencies managing many sites</span>
             </div>
             <div class="hero-code mono">
                 <span class="prompt">$</span> <span class="cmd">docker compose up -d</span><br>
@@ -453,45 +468,45 @@
         <div class="container">
             <div class="section-header">
                 <p class="section-label">Features</p>
-                <h2 class="section-title">Five things. Done right.</h2>
-                <p class="section-desc">We don't ship 200 half-baked features. We ship 5 that make you go "finally, someone gets it."</p>
+                <h2 class="section-title">The features that make teams switch</h2>
+                <p class="section-desc">HTMLess is built to help developers move faster while giving designers, editors, and agencies a workflow they can actually enjoy using.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">&#9634;</div>
-                    <h3>Schema Builder</h3>
-                    <p>Drag-and-drop content types like Notion meets Airtable. Add fields, set validations, see your API update in real time. Zero developer friction.</p>
+                    <h3>Visual Schema Builder</h3>
+                    <p>Create content models visually instead of wiring custom fields by hand. Great for developers, understandable for designers, and fast enough for agencies.</p>
+                    <span class="feature-tag tag-core">Core</span>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#9776;</div>
+                    <h3>Structured Content Blocks</h3>
+                    <p>Model pages, landing sections, articles, and reusable patterns as structured content instead of fragile HTML blobs. Better for design systems and frontend teams.</p>
+                    <span class="feature-tag tag-core">Core</span>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128065;</div>
+                    <h3>Live Preview &amp; Publishing</h3>
+                    <p>Preview drafts before they go live, manage draft and published states cleanly, and give non-technical teammates confidence before they hit publish.</p>
                     <span class="feature-tag tag-core">Core</span>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">&#9889;</div>
-                    <h3>Instant API</h3>
-                    <p>REST and GraphQL endpoints auto-generated from your schema. Authentication built-in. No config files, no code generation, no waiting.</p>
+                    <h3>Developer-Friendly APIs</h3>
+                    <p>Separate CMA, CDA, and Preview APIs. Scoped tokens. ETags. Cacheable reads. HTMLess is designed for real frontend work, not just admin demos.</p>
                     <span class="feature-tag tag-core">Core</span>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">&#128279;</div>
-                    <h3>Webhooks &amp; Automations</h3>
-                    <p>Zapier-style event triggers with HMAC signing, automatic retries, and delivery logs. Connect to anything without middleware.</p>
-                    <span class="feature-tag tag-core">Core</span>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#9775;</div>
-                    <h3>Blazing Fast Admin</h3>
-                    <p>Dark mode native. Keyboard-first. Every interaction under 100ms. Built with Next.js, Radix, and Tailwind. Cleaner than Strapi.</p>
+                    <div class="feature-icon">&#128444;</div>
+                    <h3>Media Workflow for Designers</h3>
+                    <p>Manage images, alt text, captions, and reusable assets in one place so designers and content teams are not blocked by developer-only workflows.</p>
                     <span class="feature-tag tag-core">Core</span>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">&#127760;</div>
-                    <h3>Multi-Site</h3>
-                    <p>Run multiple websites from one instance. Isolated content, shared infrastructure. The agency play that nobody else has nailed.</p>
+                    <h3>Multi-Site for Agencies</h3>
+                    <p>Run multiple brands, websites, or client projects from one install with isolated spaces, shared infrastructure, and a workflow that scales beyond one project.</p>
                     <span class="feature-tag tag-core">Core</span>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#129302;</div>
-                    <h3>AI Schema Generation</h3>
-                    <p>Describe your content in plain English. HTMLess generates the schema, fields, and API endpoints. Paste JSON, get a full backend.</p>
-                    <span class="feature-tag tag-soon">Coming Soon</span>
                 </div>
             </div>
         </div>
@@ -502,29 +517,29 @@
         <div class="container">
             <div class="section-header">
                 <p class="section-label">How It Works</p>
-                <h2 class="section-title">Schema to production in minutes</h2>
-                <p class="section-desc">No boilerplate. No config ceremony. Define your content, get your API, ship.</p>
+                <h2 class="section-title">Easy for non-developers. Serious enough for engineers.</h2>
+                <p class="section-desc">Design the content model, create pages visually, preview changes, and ship to any frontend without rebuilding your process around the CMS.</p>
             </div>
             <div class="steps">
                 <div class="step">
                     <div class="step-num">1</div>
-                    <h3>Define Schema</h3>
-                    <p>Drag and drop fields to create your content types. Text, media, references, blocks&mdash;all visual.</p>
+                    <h3>Model It Visually</h3>
+                    <p>Set up content types, fields, and reusable structures in a visual workflow that teams can understand without reading backend docs.</p>
                 </div>
                 <div class="step">
                     <div class="step-num">2</div>
-                    <h3>Create Content</h3>
-                    <p>Block-based editor with draft/publish workflow, version history, and scheduling. WordPress-grade authoring UX.</p>
+                    <h3>Create with Confidence</h3>
+                    <p>Give editors and designers a cleaner authoring flow with structured content, reusable media, drafts, and preview before anything goes live.</p>
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
-                    <h3>Fetch via API</h3>
-                    <p>REST and GraphQL ready instantly. Scoped tokens, field selection, embedded references. CDN-cacheable.</p>
+                    <h3>Connect Any Frontend</h3>
+                    <p>Frontend teams fetch exactly what they need through clean APIs, token scopes, field selection, and delivery-focused content endpoints.</p>
                 </div>
                 <div class="step">
                     <div class="step-num">4</div>
-                    <h3>Preview &amp; Publish</h3>
-                    <p>Secure draft preview with short-lived tokens. One-click publish. Webhooks fire, caches invalidate, builds trigger.</p>
+                    <h3>Scale Across Sites</h3>
+                    <p>Use one CMS for multiple brands, client projects, or product properties without turning your content workflow into a mess.</p>
                 </div>
             </div>
         </div>
@@ -536,16 +551,15 @@
             <div class="code-split">
                 <div>
                     <p class="section-label">Developer Experience</p>
-                    <h2 class="section-title">APIs that feel<br>like they should</h2>
+                    <h2 class="section-title">Built for modern frontends,<br>not legacy templates</h2>
                     <p class="section-desc" style="margin-bottom:1.5rem;">
-                        Clean REST endpoints with JSON Schema contracts. Field selection, embedded references, conditional requests.
-                        Inspired by the best parts of WordPress REST, without the baggage.
+                        Clean delivery APIs for websites, apps, landing pages, and design systems. HTMLess gives developers structured content and predictable responses instead of CMS-shaped surprises.
                     </p>
                     <p class="section-desc">
                         Three separate API surfaces: <strong style="color:var(--text)">CMA</strong> for editors,
-                        <strong style="color:var(--text)">CDA</strong> for frontends,
-                        <strong style="color:var(--text)">Preview</strong> for drafts.
-                        Each with the right auth and caching semantics.
+                        <strong style="color:var(--text)">CDA</strong> for production frontends,
+                        <strong style="color:var(--text)">Preview</strong> for draft review.
+                        That means safer editing, cleaner integrations, and better caching behavior.
                     </p>
                 </div>
                 <div class="code-block">
@@ -584,7 +598,7 @@
         <div class="container">
             <div class="section-header">
                 <p class="section-label">Comparison</p>
-                <h2 class="section-title">How HTMLess stacks up</h2>
+                <h2 class="section-title">Why teams pick HTMLess</h2>
             </div>
             <table class="comp-table">
                 <thead>
@@ -617,6 +631,13 @@
                         <td class="check">Basic</td>
                         <td class="check">Yes</td>
                         <td class="cross">Code Only</td>
+                    </tr>
+                    <tr>
+                        <td>Designer-Friendly Workflow</td>
+                        <td class="check highlight">Built for teams</td>
+                        <td>Mostly dev-led</td>
+                        <td>Editor-friendly</td>
+                        <td>Developer-heavy</td>
                     </tr>
                     <tr>
                         <td>Instant REST + GraphQL</td>
@@ -663,8 +684,8 @@
         <div class="container">
             <div class="section-header">
                 <p class="section-label">Pricing</p>
-                <h2 class="section-title">Self-host free. Scale when ready.</h2>
-                <p class="section-desc">The full CMS is free and open source. Our cloud handles the ops so you can focus on building.</p>
+                <h2 class="section-title">Start free. Grow into your workflow.</h2>
+                <p class="section-desc">Self-host the open source core for free, or use hosted plans when you want infrastructure, team workflows, and scaling handled for you.</p>
             </div>
             <div class="pricing-grid">
                 <div class="price-card">
@@ -678,7 +699,7 @@
                         <li>Multi-site support</li>
                         <li>Community support</li>
                     </ul>
-                    <a href="#" class="btn-price btn-price-ghost">Self-Host Guide</a>
+                    <a href="https://github.com/pbieda/htmless#quick-start" target="_blank" rel="noopener" class="btn-price btn-price-ghost">Self-Host Guide</a>
                 </div>
                 <div class="price-card">
                     <h3>Starter</h3>
@@ -691,7 +712,7 @@
                         <li>5 GB media storage</li>
                         <li>Email support</li>
                     </ul>
-                    <a href="#" class="btn-price btn-price-ghost">Get Started</a>
+                    <a href="https://github.com/pbieda/htmless/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener" class="btn-price btn-price-ghost">See Hosted Roadmap</a>
                 </div>
                 <div class="price-card featured">
                     <h3>Growth</h3>
@@ -704,7 +725,7 @@
                         <li>25 GB media storage</li>
                         <li>Priority support</li>
                     </ul>
-                    <a href="#" class="btn-price btn-price-primary">Get Started</a>
+                    <a href="https://github.com/pbieda/htmless" target="_blank" rel="noopener" class="btn-price btn-price-primary">Join Early Access</a>
                 </div>
                 <div class="price-card">
                     <h3>Scale</h3>
@@ -717,7 +738,7 @@
                         <li>100 GB media storage</li>
                         <li>SSO + audit logs</li>
                     </ul>
-                    <a href="#" class="btn-price btn-price-ghost">Contact Sales</a>
+                    <a href="https://github.com/pbieda/htmless/issues" target="_blank" rel="noopener" class="btn-price btn-price-ghost">Talk About Your Use Case</a>
                 </div>
             </div>
         </div>
@@ -725,11 +746,11 @@
 
     <!-- OPEN SOURCE CTA -->
     <section class="oss-cta">
-        <h2>Built in the open.<br>For <span style="color:var(--accent-light)">everyone</span>.</h2>
-        <p>HTMLess is MIT licensed. Read the source, fork it, self-host it, contribute to it. No vendor lock-in, ever.</p>
+        <h2>Open source power.<br>Usable by <span style="color:var(--accent-light)">real teams</span>.</h2>
+        <p>HTMLess is for developers who want control, designers who want a visual workflow, and agencies who need one CMS that can handle many sites without vendor lock-in.</p>
         <div class="hero-actions">
-            <a href="#" class="btn btn-primary"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="margin-right:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Star on GitHub</a>
-            <a href="#" class="btn btn-ghost">Read the Docs</a>
+            <a href="https://github.com/pbieda/htmless" target="_blank" rel="noopener" class="btn btn-primary"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="margin-right:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Star on GitHub</a>
+            <a href="https://github.com/pbieda/htmless/tree/main/docs" target="_blank" rel="noopener" class="btn btn-ghost">Read the Docs</a>
         </div>
         <div class="hero-code mono" style="margin-top:2rem;max-width:520px;margin-left:auto;margin-right:auto;">
             <span class="prompt">$</span> <span class="cmd">npx create-htmless my-cms</span><br>
@@ -744,28 +765,28 @@
         <div class="footer-inner">
             <div class="footer-brand">
                 <a href="/" class="nav-logo" style="font-size:1.5rem">HTML<span>ess</span></a>
-                <p>The open source headless CMS that doesn't suck. Built for developers, loved by editors.</p>
+                <p>The open source headless CMS built for developers, designers, editors, and agencies that need structure without friction.</p>
             </div>
             <div class="footer-col">
                 <h4>Product</h4>
                 <a href="#features">Features</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#compare">Compare</a>
-                <a href="#">Changelog</a>
+                <a href="https://github.com/pbieda/htmless/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener">Roadmap</a>
             </div>
             <div class="footer-col">
                 <h4>Developers</h4>
-                <a href="#">Documentation</a>
-                <a href="#">API Reference</a>
-                <a href="#">Self-Host Guide</a>
-                <a href="#">GitHub</a>
+                <a href="https://github.com/pbieda/htmless/tree/main/docs" target="_blank" rel="noopener">Documentation</a>
+                <a href="https://github.com/pbieda/htmless/blob/main/docs/SPEC.md" target="_blank" rel="noopener">API Reference</a>
+                <a href="https://github.com/pbieda/htmless#quick-start" target="_blank" rel="noopener">Self-Host Guide</a>
+                <a href="https://github.com/pbieda/htmless" target="_blank" rel="noopener">GitHub</a>
             </div>
             <div class="footer-col">
                 <h4>Company</h4>
-                <a href="#">Blog</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
-                <a href="#">Careers</a>
+                <a href="https://github.com/pbieda/htmless" target="_blank" rel="noopener">Open Source Project</a>
+                <a href="https://github.com/pbieda/htmless/blob/main/README.md" target="_blank" rel="noopener">About HTMLess</a>
+                <a href="https://github.com/pbieda/htmless/issues" target="_blank" rel="noopener">Contact / Feedback</a>
+                <a href="https://github.com/pbieda/htmless/issues" target="_blank" rel="noopener">Contribute</a>
             </div>
         </div>
         <div class="footer-bottom">

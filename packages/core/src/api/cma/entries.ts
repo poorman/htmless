@@ -3,6 +3,7 @@ import type { Router as IRouter } from 'express';
 import { nanoid } from 'nanoid';
 import { prisma } from '../../db.js';
 import { requireScope } from '../../auth/middleware.js';
+import { validateEntryData, validateForPublish } from '../../schema/validator.js';
 
 const router: IRouter = Router();
 
@@ -116,6 +117,15 @@ router.post('/', requireScope('cma:write'), async (req, res) => {
   if (!contentType) {
     res.status(404).json({ error: 'not_found', message: `Content type "${contentTypeKey}" not found` });
     return;
+  }
+
+  // Validate entry data against schema
+  if (data && typeof data === 'object') {
+    const validationErrors = await validateEntryData(contentType.id, data as Record<string, unknown>);
+    if (validationErrors.length > 0) {
+      res.status(400).json({ error: 'validation_error', message: 'Entry data is invalid', details: validationErrors });
+      return;
+    }
   }
 
   // Check for duplicate slug
@@ -414,6 +424,13 @@ router.post('/:id/publish', requireScope('cma:write'), async (req, res) => {
     return;
   }
 
+  // Validate all required fields before publishing
+  const publishErrors = await validateForPublish(entry.contentTypeId, draftVersion.data as Record<string, unknown>);
+  if (publishErrors.length > 0) {
+    res.status(400).json({ error: 'publish_validation_error', message: 'Entry cannot be published — required fields missing', details: publishErrors });
+    return;
+  }
+
   const etag = generateEtag();
 
   const publishedVersion = await prisma.$transaction(async (tx) => {
@@ -540,6 +557,116 @@ router.post('/:id/schedule', requireScope('cma:write'), async (req, res) => {
     id: entry.id,
     status: 'scheduled',
     scheduledAt: scheduledAt.toISOString(),
+  });
+});
+
+// ─── POST /entries/:id/revert ───
+router.post('/:id/revert', requireScope('cma:write'), async (req, res) => {
+  const spaceId = getSpaceId(req);
+  if (!spaceId) {
+    res.status(400).json({ error: 'validation_error', message: 'spaceId is required' });
+    return;
+  }
+
+  const entry = await prisma.entry.findFirst({
+    where: { id: req.params.id as string, spaceId },
+    include: { state: true },
+  });
+  if (!entry) {
+    res.status(404).json({ error: 'not_found', message: 'Entry not found' });
+    return;
+  }
+
+  const { versionId } = req.body;
+  if (!versionId) {
+    res.status(400).json({ error: 'validation_error', message: 'versionId is required' });
+    return;
+  }
+
+  const targetVersion = await prisma.entryVersion.findFirst({
+    where: { id: versionId, entryId: entry.id },
+  });
+  if (!targetVersion) {
+    res.status(404).json({ error: 'not_found', message: 'Version not found for this entry' });
+    return;
+  }
+
+  // Create a new draft version with the old version's data
+  const etag = generateEtag();
+  const newVersion = await prisma.$transaction(async (tx) => {
+    const reverted = await tx.entryVersion.create({
+      data: {
+        entryId: entry.id,
+        kind: 'draft',
+        data: targetVersion.data as object,
+        etag,
+        createdById: req.auth!.userId,
+      },
+    });
+
+    await tx.entryState.update({
+      where: { entryId: entry.id },
+      data: { draftVersionId: reverted.id },
+    });
+
+    await tx.entry.update({ where: { id: entry.id }, data: {} });
+
+    return reverted;
+  });
+
+  res.json({
+    id: newVersion.id,
+    entryId: entry.id,
+    kind: 'draft',
+    data: newVersion.data,
+    etag: newVersion.etag,
+    revertedFrom: versionId,
+    createdAt: newVersion.createdAt,
+  });
+});
+
+// ─── GET /entries/:id/versions ───
+router.get('/:id/versions', requireScope('cma:read', 'cma:write'), async (req, res) => {
+  const spaceId = getSpaceId(req);
+  if (!spaceId) {
+    res.status(400).json({ error: 'validation_error', message: 'spaceId is required' });
+    return;
+  }
+
+  const entry = await prisma.entry.findFirst({
+    where: { id: req.params.id as string, spaceId },
+  });
+  if (!entry) {
+    res.status(404).json({ error: 'not_found', message: 'Entry not found' });
+    return;
+  }
+
+  const { limit: limitParam, offset: offsetParam } = req.query as Record<string, string | undefined>;
+  const limit = Math.min(parseInt(limitParam ?? '25', 10), 100);
+  const offset = parseInt(offsetParam ?? '0', 10);
+
+  const [versions, total] = await Promise.all([
+    prisma.entryVersion.findMany({
+      where: { entryId: entry.id },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      skip: offset,
+    }),
+    prisma.entryVersion.count({ where: { entryId: entry.id } }),
+  ]);
+
+  res.json({
+    items: versions.map((v) => ({
+      id: v.id,
+      kind: v.kind,
+      data: v.data,
+      etag: v.etag,
+      createdById: v.createdById,
+      createdAt: v.createdAt,
+    })),
+    total,
+    limit,
+    offset,
   });
 });
 

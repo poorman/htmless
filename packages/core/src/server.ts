@@ -6,6 +6,7 @@ import { prisma } from './db.js';
 import cmaRouter from './api/cma/index.js';
 import cdaRouter from './api/cda/index.js';
 import previewRouter from './api/preview/index.js';
+import { wireEventHandlers } from './events/wire.js';
 
 const app = express();
 
@@ -42,6 +43,8 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 async function start() {
   await prisma.$connect();
   console.log('Database connected');
+
+  wireEventHandlers();
 
   app.listen(config.port, () => {
     console.log(`HTMLess API running on http://localhost:${config.port}`);
