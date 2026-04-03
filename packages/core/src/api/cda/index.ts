@@ -4,6 +4,7 @@ import { authenticate } from '../../auth/middleware.js';
 import contentRoutes from './content.js';
 import schemasRoutes from './schemas.js';
 import assetsRoutes from './assets.js';
+import mediaRoutes from './media.js';
 
 const router: IRouter = Router();
 
@@ -13,5 +14,6 @@ router.use(authenticate({ required: false }));
 router.use('/content', contentRoutes);
 router.use('/schemas', schemasRoutes);
 router.use('/assets', assetsRoutes);
+router.use('/media', mediaRoutes);
 
 export default router;

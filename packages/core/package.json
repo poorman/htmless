@@ -7,6 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "test": "tsx tests/api.test.ts",
     "lint": "eslint src/",
     "prisma": "prisma"
   },

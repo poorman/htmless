@@ -173,6 +173,45 @@
             font-size: 0.78rem; color: var(--text-muted);
         }
 
+        /* ── AUDIENCE ── */
+        .audience {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .audience-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+        }
+        .audience-card {
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 14px; padding: 2rem;
+        }
+        .audience-card:hover { border-color: var(--accent); }
+        .audience-kicker {
+            display: inline-block;
+            font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--accent-light);
+            margin-bottom: 0.9rem;
+        }
+        .audience-card h3 {
+            font-size: 1.2rem; font-weight: 800;
+            letter-spacing: -0.02em; margin-bottom: 0.7rem;
+        }
+        .audience-card p {
+            font-size: 0.92rem; color: var(--text-muted);
+            line-height: 1.65; margin-bottom: 1rem;
+        }
+        .audience-list {
+            list-style: none; display: flex; flex-direction: column; gap: 0.55rem;
+        }
+        .audience-list li {
+            font-size: 0.84rem; color: var(--text-muted);
+        }
+        .audience-list li::before {
+            content: '\2713'; color: var(--accent-light); margin-right: 0.55rem; font-weight: 700;
+        }
+
         /* ── SECTIONS ── */
         section { padding: 6rem 2rem; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -369,6 +408,7 @@
 
         /* ── RESPONSIVE ── */
         @media (max-width: 1024px) {
+            .audience-grid { grid-template-columns: 1fr; }
             .features-grid { grid-template-columns: repeat(2, 1fr); }
             .steps { grid-template-columns: repeat(2, 1fr); }
             .code-split { grid-template-columns: 1fr; gap: 2rem; }
@@ -459,6 +499,49 @@
             <div class="hero-code mono">
                 <span class="prompt">$</span> <span class="cmd">docker compose up -d</span><br>
                 <span style="color:var(--green);">&#10003;</span> <span style="color:var(--text-dim);">HTMLess running at</span> <span style="color:var(--accent-light);">http://localhost:3000</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHO IT'S FOR -->
+    <section class="audience" id="audience">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-label">Who It's For</p>
+                <h2 class="section-title">Made for the whole team, not just the backend person</h2>
+                <p class="section-desc">HTMLess works best when developers, designers, editors, and agencies all need one content system they can share without stepping on each other.</p>
+            </div>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <span class="audience-kicker">For Developers</span>
+                    <h3>Clean APIs and structured content</h3>
+                    <p>Ship faster with delivery-focused APIs, predictable content models, preview support, and a CMS architecture that fits modern frontend stacks.</p>
+                    <ul class="audience-list">
+                        <li>Separate CMA, CDA, and Preview APIs</li>
+                        <li>Structured content instead of messy blobs</li>
+                        <li>Self-hostable with Docker from day one</li>
+                    </ul>
+                </div>
+                <div class="audience-card">
+                    <span class="audience-kicker">For Designers</span>
+                    <h3>Visual workflows without dev bottlenecks</h3>
+                    <p>Model content visually, manage media in one place, and preview how pages feel before they go live without relying on a developer for every small change.</p>
+                    <ul class="audience-list">
+                        <li>Visual schema builder and reusable sections</li>
+                        <li>Media workflow with alt text and captions</li>
+                        <li>Draft preview before publishing</li>
+                    </ul>
+                </div>
+                <div class="audience-card">
+                    <span class="audience-kicker">For Agencies</span>
+                    <h3>One CMS for many brands and client sites</h3>
+                    <p>Manage multiple spaces, content models, and client projects from one system so your team can standardize delivery instead of reinventing the stack each time.</p>
+                    <ul class="audience-list">
+                        <li>Multi-site architecture built in</li>
+                        <li>Reusable workflows across client projects</li>
+                        <li>Open source core with no lock-in</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>

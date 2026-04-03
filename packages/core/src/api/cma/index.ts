@@ -6,6 +6,7 @@ import authRouter from './auth.js';
 import schemasRouter from './schemas.js';
 import entriesRouter from './entries.js';
 import assetsRouter from './assets.js';
+import uploadsRouter from './uploads.js';
 import webhooksRouter from './webhooks.js';
 
 const router: IRouter = Router();
@@ -20,6 +21,7 @@ router.use(authenticate());
 router.use('/schemas', requirePermission('schema.admin', 'entry.read'), schemasRouter);
 router.use('/entries', requirePermission('entry.read', 'entry.create'), entriesRouter);
 router.use('/assets', requirePermission('asset.upload', 'entry.read'), assetsRouter);
+router.use('/uploads', requirePermission('asset.upload'), uploadsRouter);
 router.use('/webhooks', requirePermission('webhook.manage'), webhooksRouter);
 
 export default router;

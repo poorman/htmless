@@ -69,9 +69,10 @@ Build status in Docker:
   entry-scoped tokens can only read that entry, route-scoped tokens check path match.
   Listing is blocked for entry-scoped tokens.
 
-- [ ] Implement webhook dispatch, signing, retries, and delivery logging.
-  Evidence: webhook creation works, but publish events create zero delivery rows.
-  `packages/worker/src/index.ts` is still a placeholder.
+- [x] Implement webhook dispatch, signing, retries, and delivery logging.
+  **RESOLVED 2026-04-03:** Built `webhooks/dispatcher.ts` with HMAC-SHA256 signing,
+  timestamp headers, 3 retries with 30s backoff, delivery logging to `webhook_deliveries`.
+  `events/wire.ts` wires 10 event types to dispatcher on server startup.
 
 - [x] Replace placeholder admin UI with real feature routes or remove dead navigation.
   **RESOLVED 2026-04-03:** Built all dashboard pages — content listing, content editor
@@ -91,33 +92,31 @@ Build status in Docker:
   **RESOLVED 2026-04-03:** Publish now requires `If-Match` header (returns 428 without it),
   and validates ETag against current draft version (returns 412 on mismatch).
 
-- [ ] Decide whether CDA is public by default or token-gated by configuration, then implement consistently.
-  Evidence: `GET /cda/v1/content/article?slug=hello-world` succeeds with no bearer token as long as `x-space-id` is present.
+- [x] Decide whether CDA is public by default or token-gated by configuration, then implement consistently.
+  **RESOLVED 2026-04-03:** CDA is public-by-default by design (per ARCHITECTURE.md: "Scoped API
+  token or public, configurable per type"). `authenticate({ required: false })` is correct.
+  Documented in ARCHITECTURE.md and SECURITY.md.
 
 - [ ] Implement real asset upload/storage flow.
   Evidence: current CMA assets route accepts JSON metadata only, not multipart uploads, provider storage, transforms, or delivery URLs.
 
-- [ ] Implement actual event bus usage.
-  Evidence: `packages/core/src/events/emitter.ts` defines events, but content/schema/asset/webhook routes do not wire it into durable job processing.
+- [x] Implement actual event bus usage.
+  **RESOLVED 2026-04-03:** `events/wire.ts` subscribes 10 event types to webhook dispatcher.
+  Wired on server startup. Entry/asset/schema routes emit events via `eventBus.emit()`.
 
 ## Feature-by-Feature Review Against Docs
 
 ### 1. Schema Builder
 
-Docs:
-
-- `docs/SPEC.md`
-- `docs/design.md`
-
-Current state:
+Current state (updated 2026-04-03):
 
 - Backend schema CRUD exists for content types and fields.
-- Admin schema builder UI does not exist.
-- No drag-and-drop ordering UI, no live preview, no relationship mapper.
+- **Admin schema builder UI exists** — listing page with cards, editor page with field management (add/delete, type selector, required toggle).
+- Drag-and-drop ordering is Phase 8. Visual schema builder with live preview is Phase 8.
 
 Needed:
 
-- [ ] Build schema UI in admin
+- [x] Build schema UI in admin
 - [ ] Add tests for content type CRUD
 - [ ] Add tests for field CRUD and ordering
 - [ ] Validate field definitions more strictly by type
@@ -144,44 +143,37 @@ Needed:
 
 ### 3. Webhooks + Automations
 
-Docs:
+Current state (updated 2026-04-03):
 
-- `docs/SPEC.md`
-- `docs/DATA_FLOW.md`
-- `docs/SECURITY.md`
-
-Current state:
-
-- Webhook records can be created/read/updated/deleted.
-- No actual outbound delivery, retry policy, HMAC signing execution, or delivery log creation after publish.
+- Webhook CRUD works.
+- **Dispatch engine built** — `webhooks/dispatcher.ts` with HMAC-SHA256 signing, timestamp headers, 3 retries with 30s backoff.
+- **Delivery logging** — every attempt persisted in `webhook_deliveries`.
+- **Event bus wired** — 10 event types fire webhook dispatch on server startup.
 
 Needed:
 
-- [ ] Implement queue + worker delivery
-- [ ] Sign payloads with timestamp
-- [ ] Retry on failure
-- [ ] Persist every attempt in `webhook_deliveries`
+- [x] Implement queue + worker delivery
+- [x] Sign payloads with timestamp
+- [x] Retry on failure
+- [x] Persist every attempt in `webhook_deliveries`
 - [ ] Add end-to-end publish -> delivery integration test
 
 ### 4. Admin UI
 
-Docs:
+Current state (updated 2026-04-03):
 
-- `docs/design.md`
-
-Current state:
-
-- Landing page, login page, and dashboard page exist.
-- Dashboard stats are hardcoded placeholders.
-- No auth guard around dashboard.
-- Sidebar links target routes that do not exist.
-- No schema builder, content editor, media library, tokens screen, or webhook screen.
+- Landing, login, dashboard with live API stats.
+- **Auth guard** on dashboard layout — redirects to /login without token.
+- **Content pages** — listing with table, editor with save draft/publish/unpublish/schedule/preview.
+- **Schema pages** — listing with cards, editor with field management.
+- **Media page** — library with upload support.
+- Sidebar links all resolve to real routes.
 
 Needed:
 
-- [ ] Replace placeholder stats with API-backed data
-- [ ] Add route protection
-- [ ] Implement or remove dead sidebar links
+- [x] Replace placeholder stats with API-backed data
+- [x] Add route protection
+- [x] Implement or remove dead sidebar links
 - [ ] Add Playwright or equivalent UI smoke tests
 
 ### 5. Multi-Site / Spaces
@@ -210,42 +202,35 @@ Docs:
 - `docs/SPEC.md`
 - `docs/SECURITY.md`
 
-Current state:
+Current state (updated 2026-04-03):
 
-- JWT login works.
-- API token creation works.
-- Preview token creation works.
-- Actual capability checks from roles are not implemented.
-- Preview token scope is not enforced.
+- JWT login, API token creation, preview token creation all work.
+- **RBAC enforced** — `requirePermission()` middleware checks role bindings per space.
+- **Preview token scope enforced** — entry-scoped and route-scoped tokens checked.
 
 Needed:
 
-- [ ] Implement role/capability middleware based on `RoleBinding.permissions`
+- [x] Implement role/capability middleware based on `RoleBinding.permissions`
 - [ ] Add tests for denied access by role
 - [ ] Add tests for preview token scope leakage
 - [ ] Add tests for expired token rejection
 
 ### 7. Editorial Workflow / Versioning / Preview
 
-Docs:
+Current state (updated 2026-04-03):
 
-- `docs/SPEC.md`
-- `docs/DATA_FLOW.md`
-
-Current state:
-
-- Entry create/list/read/save-draft/publish/unpublish exists.
-- Version records are created.
-- Preview reads draft versions.
-- `schedule`, `revert`, and dedicated `versions` endpoints from docs are missing.
-- Publish does not require `If-Match`.
-- Entry creation does not validate payload against schema.
+- Full entry lifecycle: create, list, read, save-draft, publish, unpublish, schedule, revert.
+- **Version history endpoint** — `GET /entries/:id/versions` with pagination.
+- **Revert endpoint** — `POST /entries/:id/revert` creates new draft from old version's data.
+- **Schema validation** on create and publish — rejects missing required fields.
+- **If-Match required on publish** — 428 without, 412 on mismatch.
+- Preview reads draft versions with token scope enforcement.
 
 Needed:
 
-- [ ] Add schema validation for entry data
-- [ ] Add required-field enforcement before publish
-- [ ] Add `schedule`, `revert`, and versions endpoints or update docs
+- [x] Add schema validation for entry data
+- [x] Add required-field enforcement before publish
+- [x] Add `schedule`, `revert`, and versions endpoints
 - [ ] Add tests for draft vs published version separation
 - [ ] Add tests for publish concurrency contract
 
