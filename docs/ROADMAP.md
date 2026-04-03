@@ -57,8 +57,8 @@ Build the cleanest, fastest headless CMS that makes Strapi look bloated. Open so
 - [x] Block versioning strategy (pin/migrate/deprecate)
 - [x] Reusable patterns/templates
 - [x] Core blocks: paragraph, heading, image, callout, embed, list, code
-- [ ] Admin UI: block-based content editor
-- [ ] Admin UI: pattern picker
+- [x] Admin UI: block-based content editor
+- [x] Admin UI: pattern picker
 - [x] Renderer SDK contract (block → component mapping)
 
 ## Phase 5 — Integrations & Extensibility

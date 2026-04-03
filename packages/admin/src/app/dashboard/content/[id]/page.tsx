@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { apiGet, apiPost, ApiError } from '@/lib/api';
+import BlocksEditor, { BlockInstance } from './blocks-editor';
+import PatternPicker from './pattern-picker';
 
 interface Version {
   id: string;
@@ -12,10 +14,22 @@ interface Version {
   createdAt: string;
 }
 
+interface ContentTypeInfo {
+  key: string;
+  name: string;
+}
+
+interface FieldDef {
+  key: string;
+  name: string;
+  type: string;
+}
+
 interface Entry {
   id: string;
   slug: string;
   contentTypeKey: string;
+  contentType?: ContentTypeInfo;
   status: string;
   data: Record<string, unknown>;
   createdAt: string;
@@ -46,6 +60,8 @@ export default function ContentEditorPage() {
 
   const [entry, setEntry] = useState<Entry | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({});
+  const [blocksData, setBlocksData] = useState<Record<string, BlockInstance[]>>({});
+  const [fieldDefs, setFieldDefs] = useState<FieldDef[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -55,6 +71,10 @@ export default function ContentEditorPage() {
   const [showSchedule, setShowSchedule] = useState(false);
   const [scheduleDate, setScheduleDate] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [showPatternPicker, setShowPatternPicker] = useState(false);
+  const [patternTargetField, setPatternTargetField] = useState<string | null>(null);
+
+  const spaceId = 'cmnibacxs0005crr6jxgrt3e8';
 
   const loadEntry = useCallback(async () => {
     setLoading(true);
