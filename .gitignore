@@ -8,3 +8,13 @@ dist/
 coverage/
 .turbo/
 packages/core/.env
+uploads/
+
+# Internal docs (not part of the open source CMS)
+docs/
+
+# Marketing website (served by nginx, not part of CMS)
+index.html
+favicon.ico
+favicon.svg
+site.webmanifest
