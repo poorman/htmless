@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](package.json)
 
-[Website](https://htmless.com) · [Contributing](CONTRIBUTING.md) · [Developer Guide](docs/CONTRIBUTING-DEV.md)
+[Website](https://htmless.com) · [Contributing](CONTRIBUTING.md) · [Developer Guide](CONTRIBUTING-DEV.md)
 
 HTMLess is an open source headless CMS for developers, designers, editors, and agencies who want structured content, clean APIs, and Docker-first self-hosting without getting trapped in a bloated platform.
 
@@ -106,7 +106,11 @@ This separation keeps editorial operations safer while giving frontend teams a d
 ## Documentation
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to set up, code style, PR workflow
-- [CONTRIBUTING-DEV.md](CONTRIBUTING-DEV.md) — adding routes, migrations, Docker, troubleshooting
+- [docs/CONTRIBUTING-DEV.md](docs/CONTRIBUTING-DEV.md) — adding routes, migrations, Docker, troubleshooting
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — high-level system design
+- [docs/SPEC.md](docs/SPEC.md) — API and behavior contract
+- [docs/SECURITY.md](docs/SECURITY.md) — security decisions and operational concerns
+- [docs/ROADMAP.md](docs/ROADMAP.md) — current phases and planned features
 
 ## Why Install It Now
 
