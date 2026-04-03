@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+
+jobs:
+  # ─── Build ───────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @htmless/core exec prisma generate
+
+      - name: Build core
+        run: pnpm --filter @htmless/core build
+
+      - name: Build admin
+        run: pnpm --filter @htmless/admin build
+
+  # ─── Typecheck ───────────────────────────────────────────────────────
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @htmless/core exec prisma generate
+
+      - name: Typecheck core (tsc)
+        run: pnpm --filter @htmless/core build
+
+  # ─── Test ────────────────────────────────────────────────────────────
+  test:
+    name: API Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: htmless
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: htmless
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U htmless"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://htmless:test@localhost:5432/htmless
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ci-test-secret-not-for-production
+      PORT: 3100
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @htmless/core exec prisma generate
+
+      - name: Run migrations
+        run: pnpm --filter @htmless/core exec prisma migrate deploy
+
+      - name: Seed database
+        run: pnpm --filter @htmless/core exec prisma db seed
+
+      - name: Build core
+        run: pnpm --filter @htmless/core build
+
+      - name: Start API in background
+        run: |
+          pnpm --filter @htmless/core dev &
+          # Wait for the API to be ready
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3100/health > /dev/null 2>&1; then
+              echo "API is ready"
+              break
+            fi
+            echo "Waiting for API... ($i/30)"
+            sleep 2
+          done
+          # Fail if API never became ready
+          curl -sf http://localhost:3100/health || (echo "API failed to start" && exit 1)
+
+      - name: Run API tests
+        run: pnpm --filter @htmless/core test
