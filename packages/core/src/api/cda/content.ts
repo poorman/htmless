@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { createHash } from 'crypto';
 import { prisma } from '../../db.js';
 
 import type { Request, Response } from 'express';
 
-const router = Router();
+const router: IRouter = Router();
 
 /**
  * Pick specific fields from a data object.
@@ -92,7 +93,7 @@ router.get('/:typeKey', async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const { typeKey } = req.params;
+  const typeKey = req.params.typeKey as string;
   const slug = req.query.slug as string | undefined;
   const fieldsParam = req.query.fields as string | undefined;
   const includeParam = req.query.include as string | undefined;
@@ -185,7 +186,8 @@ router.get('/:typeKey/:id', async (req: Request, res: Response): Promise<void> =
     return;
   }
 
-  const { typeKey, id } = req.params;
+  const typeKey = req.params.typeKey as string;
+  const id = req.params.id as string;
   const fieldsParam = req.query.fields as string | undefined;
   const includeParam = req.query.include as string | undefined;
 

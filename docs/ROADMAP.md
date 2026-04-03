@@ -85,6 +85,65 @@ Build the cleanest, fastest headless CMS that makes Strapi look bloated. Open so
 - [ ] Documentation site
 - [ ] Contributor guide
 
+## Phase 7 — Open Source CMS Reality Check
+> Goal: Close the gap between roadmap claims and a truly usable open source headless CMS
+
+- [ ] Make `@htmless/core` compile cleanly in Docker and CI
+- [ ] Add CI for `build`, `typecheck`, and core API smoke tests
+- [ ] Enforce real RBAC from `roles` + `role_bindings`, not just JWT presence
+- [ ] Enforce space membership on every CMA/CDA/Preview request
+- [ ] Enforce preview-token scope to the requested `entryId` and/or `route`
+- [ ] Bring publish flow in line with docs: `If-Match`, concurrency, and required-field validation
+- [ ] Validate entry payloads against content-type schema on create/save/publish
+- [ ] Ship the missing editorial endpoints or downgrade claims in docs:
+  `schedule`, `revert`, version history routes, and publishability checks
+- [ ] Replace JSON-only asset metadata CRUD with real uploads, storage, and delivery URLs
+- [ ] Turn webhook records into a real system: queue, dispatcher, HMAC signing, retries, delivery logs
+- [ ] Wire the internal event bus to actual side effects and background jobs
+- [ ] Decide and document whether CDA is public-by-default or token-gated-by-default
+- [ ] Build the missing admin routes linked from dashboard:
+  content, schema, media, webhooks, tokens, settings
+- [ ] Replace placeholder dashboard stats with live API-backed data
+- [ ] Add route protection in admin so dashboard pages require auth
+- [ ] Add automated API tests for login, schema CRUD, entry workflow, preview, assets, and webhooks
+- [ ] Add security tests for cross-space isolation, token expiry, insufficient scope, and preview leakage
+- [ ] Add browser-level smoke tests for login and main admin flows
+- [ ] Remove or revise product claims that are not implemented yet:
+  GraphQL, visual schema builder, webhook engine, media transforms, scheduling UI, extension manager
+- [ ] Publish a contributor-friendly local dev workflow that works fully in Docker
+- [ ] Define the minimum "v1 open source CMS" release checklist and block release until all required items pass
+
+## Phase 8 — Best-In-Class Product Features
+> Goal: Add the advanced product capabilities that would make HTMLess the best open source headless CMS, not just a competent one
+
+- [ ] Visual schema builder with drag-and-drop ordering, inline editing, and live API preview
+- [ ] True block editor with reusable blocks, nested blocks, patterns, and portable rendering contracts
+- [ ] Localization / multi-language content with per-field translation support
+- [ ] Content relationships with reverse lookups, reference browsing, and relation integrity tools
+- [ ] Slug rules, redirects, and URL management for multi-site content
+- [ ] Editorial collaboration features: comments, mentions, approvals, assignment, and publish checklists
+- [ ] Scheduled publishing and scheduled unpublishing with timezone-aware workflows
+- [ ] Content diff viewer for draft vs published and version-to-version comparisons
+- [ ] Content duplication, branching, and bulk operations for editors and agencies
+- [ ] Taxonomies, collections, menus, and reusable global content entries
+- [ ] Powerful search and filtering in admin across entries, assets, schemas, and users
+- [ ] Media transforms with focal points, responsive variants, and image presets
+- [ ] Asset usage tracking so editors can see where media is referenced before deleting it
+- [ ] CDN-friendly static preview URLs and frontend framework starter kits
+- [ ] GraphQL API with introspection, typed schema generation, and persisted queries
+- [ ] SDKs for TypeScript and frontend frameworks to make integration dead simple
+- [ ] Plugin / extension system with installable modules, custom fields, and admin UI extensions
+- [ ] Marketplace-ready extension packaging and permissions model
+- [ ] Importers for WordPress, Contentful, Sanity, CSV, JSON, and Google Sheets
+- [ ] Export tools for entries, schemas, media metadata, and full-project backups
+- [ ] AI-assisted schema generation, content modeling suggestions, and migration helpers
+- [ ] AI-assisted content operations: summaries, metadata generation, alt text, and content cleanup
+- [ ] Granular caching and invalidation controls for high-scale frontends
+- [ ] Multi-environment workflow: local, staging, production schemas and content promotion
+- [ ] Space templates / project starters for blogs, docs, SaaS apps, agencies, and ecommerce content
+- [ ] White-label and agency management features for running many client spaces from one install
+- [ ] Public docs portal and example gallery that make HTMLess easy to adopt without sales calls
+
 ---
 
 ## Monetization Track (Parallel)

@@ -9,6 +9,8 @@ export interface AuthContext {
   type: 'user' | 'api_token' | 'preview_token';
   scopes?: string[];
   spaceId?: string;
+  previewEntryId?: string | null;
+  previewRoute?: string | null;
 }
 
 declare global {
@@ -82,6 +84,8 @@ export function authenticate(options: { required?: boolean; allowPreview?: boole
         email: '',
         type: 'preview_token',
         spaceId: previewToken.spaceId,
+        previewEntryId: previewToken.entryId,
+        previewRoute: previewToken.route,
       };
       next();
       return;

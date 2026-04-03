@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { prisma } from '../../db.js';
 import { requireScope } from '../../auth/middleware.js';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ─── Helpers ───
 
@@ -73,7 +74,7 @@ router.get('/types/:typeKey', requireScope('cma:read', 'cma:write'), async (req,
   }
 
   const contentType = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
     include: { fields: { orderBy: { sortOrder: 'asc' } } },
   });
 
@@ -94,7 +95,7 @@ router.patch('/types/:typeKey', requireScope('cma:write'), async (req, res) => {
   }
 
   const existing = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
   });
   if (!existing) {
     res.status(404).json({ error: 'not_found', message: 'Content type not found' });
@@ -125,7 +126,7 @@ router.delete('/types/:typeKey', requireScope('cma:write'), async (req, res) => 
   }
 
   const existing = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
   });
   if (!existing) {
     res.status(404).json({ error: 'not_found', message: 'Content type not found' });
@@ -146,7 +147,7 @@ router.post('/types/:typeKey/fields', requireScope('cma:write'), async (req, res
   }
 
   const contentType = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
   });
   if (!contentType) {
     res.status(404).json({ error: 'not_found', message: 'Content type not found' });
@@ -218,7 +219,7 @@ router.patch('/types/:typeKey/fields/:fieldKey', requireScope('cma:write'), asyn
   }
 
   const contentType = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
   });
   if (!contentType) {
     res.status(404).json({ error: 'not_found', message: 'Content type not found' });
@@ -226,7 +227,7 @@ router.patch('/types/:typeKey/fields/:fieldKey', requireScope('cma:write'), asyn
   }
 
   const existingField = await prisma.field.findUnique({
-    where: { contentTypeId_key: { contentTypeId: contentType.id, key: req.params.fieldKey } },
+    where: { contentTypeId_key: { contentTypeId: contentType.id, key: req.params.fieldKey as string } },
   });
   if (!existingField) {
     res.status(404).json({ error: 'not_found', message: 'Field not found' });
@@ -272,7 +273,7 @@ router.delete('/types/:typeKey/fields/:fieldKey', requireScope('cma:write'), asy
   }
 
   const contentType = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
   });
   if (!contentType) {
     res.status(404).json({ error: 'not_found', message: 'Content type not found' });
@@ -280,7 +281,7 @@ router.delete('/types/:typeKey/fields/:fieldKey', requireScope('cma:write'), asy
   }
 
   const existingField = await prisma.field.findUnique({
-    where: { contentTypeId_key: { contentTypeId: contentType.id, key: req.params.fieldKey } },
+    where: { contentTypeId_key: { contentTypeId: contentType.id, key: req.params.fieldKey as string } },
   });
   if (!existingField) {
     res.status(404).json({ error: 'not_found', message: 'Field not found' });

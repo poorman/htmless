@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { prisma } from '../../db.js';
 import { generateJsonSchema } from '../../schema/json-schema.js';
 
 import type { Request, Response } from 'express';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ── GET /schemas/types ───────────────────────────────────────────────
 router.get('/types', async (req: Request, res: Response): Promise<void> => {
@@ -61,7 +62,7 @@ router.get('/types/:typeKey', async (req: Request, res: Response): Promise<void>
     return;
   }
 
-  const { typeKey } = req.params;
+  const typeKey = req.params.typeKey as string;
 
   const ct = await prisma.contentType.findUnique({
     where: { spaceId_key: { spaceId, key: typeKey } },
@@ -113,12 +114,12 @@ router.get('/types/:typeKey/json-schema', async (req: Request, res: Response): P
   }
 
   const ct = await prisma.contentType.findUnique({
-    where: { spaceId_key: { spaceId, key: req.params.typeKey } },
+    where: { spaceId_key: { spaceId, key: req.params.typeKey as string } },
     include: { fields: { orderBy: { sortOrder: 'asc' } } },
   });
 
   if (!ct) {
-    res.status(404).json({ error: 'not_found', message: `Content type "${req.params.typeKey}" not found` });
+    res.status(404).json({ error: 'not_found', message: `Content type "${req.params.typeKey as string}" not found` });
     return;
   }
 

@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { prisma } from '../../db.js';
 
 import type { Request, Response } from 'express';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ── GET /assets ──────────────────────────────────────────────────────
 router.get('/', async (req: Request, res: Response): Promise<void> => {
@@ -63,7 +64,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const { id } = req.params;
+  const id = req.params.id as string;
 
   const asset = await prisma.asset.findFirst({
     where: { id, spaceId },

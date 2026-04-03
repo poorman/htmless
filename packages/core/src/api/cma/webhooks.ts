@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { nanoid } from 'nanoid';
 import { prisma } from '../../db.js';
 import { requireScope } from '../../auth/middleware.js';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ─── Helpers ───
 
@@ -89,7 +90,7 @@ router.get('/:id', requireScope('cma:read', 'cma:write'), async (req, res) => {
   }
 
   const webhook = await prisma.webhook.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
     select: {
       id: true,
       url: true,
@@ -120,7 +121,7 @@ router.patch('/:id', requireScope('cma:write'), async (req, res) => {
   }
 
   const existing = await prisma.webhook.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!existing) {
     res.status(404).json({ error: 'not_found', message: 'Webhook not found' });
@@ -158,7 +159,7 @@ router.delete('/:id', requireScope('cma:write'), async (req, res) => {
   }
 
   const existing = await prisma.webhook.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!existing) {
     res.status(404).json({ error: 'not_found', message: 'Webhook not found' });
@@ -180,7 +181,7 @@ router.get('/:id/deliveries', requireScope('cma:read', 'cma:write'), async (req,
 
   // Verify webhook exists and belongs to this space
   const webhook = await prisma.webhook.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!webhook) {
     res.status(404).json({ error: 'not_found', message: 'Webhook not found' });

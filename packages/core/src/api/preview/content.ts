@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { prisma } from '../../db.js';
 
 import type { Request, Response } from 'express';
 
-const router = Router();
+const router: IRouter = Router();
 
 /**
  * Pick specific fields from a data object.
@@ -72,6 +73,25 @@ async function resolveIncludes(
   return resolved;
 }
 
+// ── Preview scope helper ──
+function checkPreviewScope(req: Request, res: Response, entryId?: string): boolean {
+  if (req.auth?.type !== 'preview_token') return true; // JWT/API tokens are unrestricted
+  // If token is scoped to a specific entry, reject access to other entries
+  if (req.auth.previewEntryId && entryId && req.auth.previewEntryId !== entryId) {
+    res.status(403).json({ error: 'preview_scope_denied', message: 'Preview token is scoped to a different entry' });
+    return false;
+  }
+  // If token is scoped to a specific route, check it
+  if (req.auth.previewRoute) {
+    const requestPath = req.originalUrl.split('?')[0];
+    if (!requestPath.includes(req.auth.previewRoute)) {
+      res.status(403).json({ error: 'preview_scope_denied', message: 'Preview token is scoped to a different route' });
+      return false;
+    }
+  }
+  return true;
+}
+
 // ── GET /content/:typeKey ────────────────────────────────────────────
 router.get('/:typeKey', async (req: Request, res: Response): Promise<void> => {
   const spaceId = req.headers['x-space-id'] as string;
@@ -80,7 +100,13 @@ router.get('/:typeKey', async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const { typeKey } = req.params;
+  // If preview token is scoped to a specific entry, listing is not allowed
+  if (req.auth?.type === 'preview_token' && req.auth.previewEntryId) {
+    res.status(403).json({ error: 'preview_scope_denied', message: 'This preview token is scoped to a specific entry — use /content/:typeKey/:id instead' });
+    return;
+  }
+
+  const typeKey = req.params.typeKey as string;
   const slug = req.query.slug as string | undefined;
   const fieldsParam = req.query.fields as string | undefined;
   const includeParam = req.query.include as string | undefined;
@@ -158,12 +184,16 @@ router.get('/:typeKey/:id', async (req: Request, res: Response): Promise<void> =
     return;
   }
 
-  const { typeKey, id } = req.params;
+  const typeKey = req.params.typeKey as string;
+  const id = req.params.id as string;
   const fieldsParam = req.query.fields as string | undefined;
   const includeParam = req.query.include as string | undefined;
 
   const fields = fieldsParam ? fieldsParam.split(',').map((f) => f.trim()) : undefined;
   const include = includeParam ? includeParam.split(',').map((f) => f.trim()) : [];
+
+  // Enforce preview token scope
+  if (!checkPreviewScope(req, res, id)) return;
 
   const contentType = await prisma.contentType.findUnique({
     where: { spaceId_key: { spaceId, key: typeKey } },

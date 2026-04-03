@@ -58,33 +58,38 @@ Build status in Docker:
 
 ### P0
 
-- [ ] Fix `@htmless/core` TypeScript build before adding more features.
-  Evidence: `pnpm --filter @htmless/core build` fails with many errors in `packages/core/src/api/*` and `packages/core/src/redis.ts`.
-  Main patterns:
-  - route params typed as `string | string[]` but used as `string`
-  - Prisma query results used as if relations were loaded when TypeScript does not know that
-  - router inferred types not portable under current TS settings
-  - `ioredis` constructor typing issue in `packages/core/src/redis.ts`
+- [x] Fix `@htmless/core` TypeScript build before adding more features.
+  **RESOLVED 2026-04-03:** `pnpm --filter @htmless/core build` now passes clean.
+  Fixes: cast all `req.params.*` as `string`, add `IRouter` type annotation to all routers,
+  fix ioredis ESM import via `createRequire`, add missing Prisma `include` clauses.
 
-- [ ] Restrict preview tokens to their declared `entryId` and/or `route`.
-  Evidence: a preview token created for `smoke-test-article` can also read `hello-world`.
-  Current code path does not enforce token scope in `packages/core/src/auth/middleware.ts` and `packages/core/src/api/preview/content.ts`.
+- [x] Restrict preview tokens to their declared `entryId` and/or `route`.
+  **RESOLVED 2026-04-03:** Auth middleware now passes `previewEntryId` and `previewRoute`
+  to `AuthContext`. Preview content routes enforce scope via `checkPreviewScope()` —
+  entry-scoped tokens can only read that entry, route-scoped tokens check path match.
+  Listing is blocked for entry-scoped tokens.
 
 - [ ] Implement webhook dispatch, signing, retries, and delivery logging.
   Evidence: webhook creation works, but publish events create zero delivery rows.
   `packages/worker/src/index.ts` is still a placeholder.
 
-- [ ] Replace placeholder admin UI with real feature routes or remove dead navigation.
-  Evidence: admin build outputs only `/`, `/login`, `/dashboard`, but dashboard links point to `/dashboard/content`, `/dashboard/schema`, `/dashboard/media`, `/dashboard/webhooks`, `/dashboard/tokens`, `/dashboard/settings`.
+- [x] Replace placeholder admin UI with real feature routes or remove dead navigation.
+  **RESOLVED 2026-04-03:** Built all dashboard pages — content listing, content editor
+  (with draft/publish/schedule/preview), schema listing, schema editor, media library.
+  Dashboard layout with auth guard and sidebar nav. API helper library.
 
 ### P1
 
-- [ ] Enforce RBAC and space membership.
-  Evidence: docs describe roles/capabilities, but current auth effectively gives any valid user JWT full CMA access.
-  `Role`, `RoleBinding`, and permissions exist in Prisma but are not used in route authorization.
+- [x] Enforce RBAC and space membership.
+  **RESOLVED 2026-04-03:** Added `requirePermission()` middleware in `auth/rbac.ts`.
+  Checks user's role bindings in the requested space against required permissions.
+  Wired into CMA index: schemas require `schema.admin|entry.read`, entries require
+  `entry.read|entry.create`, assets require `asset.upload|entry.read`, webhooks require
+  `webhook.manage`. Users without any role binding in a space get 403.
 
-- [ ] Require optimistic concurrency on publish if docs continue to claim `If-Match` is required.
-  Evidence: `save-draft` rejects wrong `If-Match` with `412`, but `publish` succeeds without `If-Match`.
+- [x] Require optimistic concurrency on publish if docs continue to claim `If-Match` is required.
+  **RESOLVED 2026-04-03:** Publish now requires `If-Match` header (returns 428 without it),
+  and validates ETag against current draft version (returns 412 on mismatch).
 
 - [ ] Decide whether CDA is public by default or token-gated by configuration, then implement consistently.
   Evidence: `GET /cda/v1/content/article?slug=hello-world` succeeds with no bearer token as long as `x-space-id` is present.

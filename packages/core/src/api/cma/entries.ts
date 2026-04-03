@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { nanoid } from 'nanoid';
 import { prisma } from '../../db.js';
 import { requireScope } from '../../auth/middleware.js';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ─── Helpers ───
 
@@ -193,7 +194,7 @@ router.get('/:id', requireScope('cma:read', 'cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
     include: {
       contentType: { select: { key: true, name: true } },
       state: true,
@@ -239,7 +240,7 @@ router.patch('/:id', requireScope('cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!entry) {
     res.status(404).json({ error: 'not_found', message: 'Entry not found' });
@@ -278,7 +279,7 @@ router.delete('/:id', requireScope('cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!entry) {
     res.status(404).json({ error: 'not_found', message: 'Entry not found' });
@@ -299,7 +300,7 @@ router.post('/:id/save-draft', requireScope('cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
     include: { state: true },
   });
   if (!entry) {
@@ -379,7 +380,7 @@ router.post('/:id/publish', requireScope('cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
     include: { state: true },
   });
   if (!entry) {
@@ -392,12 +393,24 @@ router.post('/:id/publish', requireScope('cma:write'), async (req, res) => {
     return;
   }
 
+  // Require If-Match for optimistic concurrency
+  const ifMatch = req.headers['if-match']?.replace(/"/g, '');
+  if (!ifMatch) {
+    res.status(428).json({ error: 'precondition_required', message: 'If-Match header is required to publish — fetch the entry first to get the current ETag' });
+    return;
+  }
+
   // Get the current draft version's data to snapshot as published
   const draftVersion = await prisma.entryVersion.findUnique({
     where: { id: entry.state.draftVersionId },
   });
   if (!draftVersion) {
     res.status(400).json({ error: 'invalid_state', message: 'Draft version not found' });
+    return;
+  }
+
+  if (draftVersion.etag !== ifMatch) {
+    res.status(412).json({ error: 'precondition_failed', message: 'ETag mismatch — entry was modified concurrently' });
     return;
   }
 
@@ -450,7 +463,7 @@ router.post('/:id/unpublish', requireScope('cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
     include: { state: true },
   });
   if (!entry) {
@@ -492,7 +505,7 @@ router.post('/:id/schedule', requireScope('cma:write'), async (req, res) => {
   }
 
   const entry = await prisma.entry.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
     include: { state: true },
   });
   if (!entry) {

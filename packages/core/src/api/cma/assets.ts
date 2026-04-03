@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { prisma } from '../../db.js';
 import { requireScope } from '../../auth/middleware.js';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ─── Helpers ───
 
@@ -103,7 +104,7 @@ router.get('/:id', requireScope('cma:read', 'cma:write'), async (req, res) => {
   }
 
   const asset = await prisma.asset.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
 
   if (!asset) {
@@ -123,7 +124,7 @@ router.patch('/:id', requireScope('cma:write'), async (req, res) => {
   }
 
   const existing = await prisma.asset.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!existing) {
     res.status(404).json({ error: 'not_found', message: 'Asset not found' });
@@ -159,7 +160,7 @@ router.delete('/:id', requireScope('cma:write'), async (req, res) => {
   }
 
   const existing = await prisma.asset.findFirst({
-    where: { id: req.params.id, spaceId },
+    where: { id: req.params.id as string, spaceId },
   });
   if (!existing) {
     res.status(404).json({ error: 'not_found', message: 'Asset not found' });

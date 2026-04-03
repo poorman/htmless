@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Router as IRouter } from 'express';
 import { createHash } from 'crypto';
 import { nanoid } from 'nanoid';
 import { prisma } from '../../db.js';
@@ -7,7 +8,7 @@ import { verifyPassword } from '../../auth/password.js';
 import { authenticate } from '../../auth/middleware.js';
 import { config } from '../../config.js';
 
-const router = Router();
+const router: IRouter = Router();
 
 // ─── Helpers ───
 
